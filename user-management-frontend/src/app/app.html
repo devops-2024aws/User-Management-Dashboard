@@ -1,0 +1,96 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">User Management Dashboard</h2>
+
+  <!-- Error Message Display -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">Add User</div>
+    <div class="card-body">
+      <form (ngSubmit)="addUser()" class="row g-3">
+        <div class="col-md-6">
+          <input class="form-control" placeholder="First Name (min 4 letters)" [(ngModel)]="firstName" name="firstName" required />
+        </div>
+        <div class="col-md-6">
+          <input class="form-control" placeholder="Last Name (min 4 letters)" [(ngModel)]="lastName" name="lastName" required />
+        </div>
+        <div class="col-md-6">
+          <input class="form-control" placeholder="Email" [(ngModel)]="email" name="email" required />
+        </div>
+        <div class="col-md-6">
+          <input class="form-control" placeholder="Role" [(ngModel)]="role" name="role" required />
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+          <input type="checkbox" [(ngModel)]="isActive" name="isActive" class="form-check-input me-2" />
+          Active
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Add User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th width="250">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <!-- Display Mode -->
+        <ng-container *ngIf="!user.editing">
+          <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <span class="badge" [class.bg-success]="user.isActive" [class.bg-secondary]="!user.isActive">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-warning me-2" (click)="editUser(user)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </ng-container>
+
+        <!-- Edit Mode -->
+        <ng-container *ngIf="user.editing">
+          <td>
+            <input class="form-control" [(ngModel)]="user.firstName" />
+          </td>
+          <td>
+            <input class="form-control" [(ngModel)]="user.lastName" />
+          </td>
+          <td>
+            <input class="form-control" [(ngModel)]="user.email" />
+          </td>
+          <td>
+            <input class="form-control" [(ngModel)]="user.role" />
+          </td>
+          <td>
+            <input type="checkbox" [(ngModel)]="user.isActive" class="form-check-input" />
+          </td>
+          <td>
+            <button class="btn btn-sm btn-success me-2" (click)="saveUser(user)">Save</button>
+            <button class="btn btn-sm btn-secondary" (click)="user.editing = false">Cancel</button>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="users.length === 0" class="alert alert-info mt-3">
+    No users found. Add one to get started!
+  </div>
+</div>
